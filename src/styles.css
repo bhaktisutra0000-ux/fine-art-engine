@@ -39,9 +39,9 @@
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
 
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-display: "Bricolage Grotesque", "Gerbil", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
-  --font-accent: "Caveat", ui-serif, cursive;
+  --font-accent: "Shadows Into Light", "Friends", "Caveat", ui-serif, cursive;
 }
 
 :root {
@@ -53,12 +53,12 @@
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.45 0.01 250);
 
-  /* From Figma: pill/highlight colors */
-  --mint: oklch(0.92 0.055 155);          /* #D7EEDD hero highlight */
-  --mint-soft: oklch(0.94 0.04 155);
-  --pink: oklch(0.87 0.075 350);          /* #FFC2EA hero highlight */
-  --yellow: oklch(0.82 0.16 78);          /* #F1B12E hand-drawn stroke */
-  --surface-mint: oklch(0.93 0.05 155);   /* footer background */
+  /* Exact Figma hex values */
+  --mint: #CFEBD1;          /* hero highlight pill */
+  --mint-soft: #E4F3E6;
+  --pink: #F6C3D0;          /* hero highlight pill */
+  --yellow: #F1B12E;        /* hand-drawn stroke */
+  --surface-mint: #D6EED8;  /* footer background */
 
   --border: oklch(0.9 0 0);
   --input: oklch(0.9 0 0);
@@ -108,12 +108,20 @@
 @utility font-display {
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-variation-settings: "SOFT" 100, "WONK" 1;
-  letter-spacing: -0.02em;
+  font-variation-settings: "wdth" 96;
+  letter-spacing: -0.035em;
+  font-weight: 700;
 }
 
 @utility font-accent {
   font-family: var(--font-accent);
+}
+
+/* Dotted grid backdrop (Figma hero background pattern) */
+@utility bg-dots {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: 0 0;
 }
 
 /* Marquee for mobile portraits */
