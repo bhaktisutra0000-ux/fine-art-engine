@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { HighlightPill } from "./HighlightPill";
 import { UnderlineStroke } from "./UnderlineStroke";
 import { PortraitCluster } from "./PortraitCluster";
+import { HeroBackdrop } from "./HeroBackdrop";
 import { ease, wordReveal, stagger } from "@/lib/motion";
 
 export function Hero() {
@@ -10,11 +11,7 @@ export function Hero() {
       id="home"
       className="relative overflow-hidden pt-32 md:pt-40 pb-16 md:pb-24"
     >
-      {/* Ambient background shapes hinting at Figma's stray polygons */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-24 top-40 h-56 w-56 rounded-full bg-mint/25 blur-3xl" />
-        <div className="absolute right-10 top-24 h-64 w-64 rounded-full bg-pink/20 blur-3xl" />
-      </div>
+      <HeroBackdrop />
 
       <div className="relative mx-auto max-w-[1400px] px-6 md:px-10">
         {/* Headline */}
