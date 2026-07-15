@@ -28,7 +28,7 @@ export function Hero() {
                 <span className="relative z-10">thinkers</span>
                 <UnderlineStroke
                   delay={1.1}
-                  className="absolute left-0 right-0 -bottom-4 h-8 w-full"
+                  className="absolute left-0 right-0 -bottom-2 h-5 w-full"
                 />
               </span>{" "}
               and
