@@ -53,12 +53,12 @@
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.45 0.01 250);
 
-  /* From Figma: pill/highlight colors */
-  --mint: oklch(0.92 0.055 155);          /* #D7EEDD hero highlight */
-  --mint-soft: oklch(0.94 0.04 155);
-  --pink: oklch(0.87 0.075 350);          /* #FFC2EA hero highlight */
-  --yellow: oklch(0.82 0.16 78);          /* #F1B12E hand-drawn stroke */
-  --surface-mint: oklch(0.93 0.05 155);   /* footer background */
+  /* Exact Figma hex values */
+  --mint: #CFEBD1;          /* hero highlight pill */
+  --mint-soft: #E4F3E6;
+  --pink: #F6C3D0;          /* hero highlight pill */
+  --yellow: #F1B12E;        /* hand-drawn stroke */
+  --surface-mint: #D6EED8;  /* footer background */
 
   --border: oklch(0.9 0 0);
   --input: oklch(0.9 0 0);
