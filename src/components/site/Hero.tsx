@@ -9,7 +9,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative overflow-hidden pt-32 md:pt-40 pb-16 md:pb-24"
+      className="relative overflow-hidden pt-24 md:pt-28 pb-10 md:pb-14"
     >
       <HeroBackdrop />
 
@@ -19,7 +19,7 @@ export function Hero() {
           variants={stagger(0.14)}
           initial="hidden"
           animate="show"
-          className="font-display text-center text-[13vw] leading-[1.02] tracking-[-0.03em] sm:text-[9vw] md:text-[7.5vw] lg:text-[112px] xl:text-[128px] mx-auto max-w-[1300px]"
+          className="font-display text-center text-[12vw] leading-[1.05] tracking-[-0.03em] sm:text-6xl md:text-[64px] lg:text-[76px] xl:text-[84px] mx-auto max-w-[980px]"
         >
           <span className="block overflow-hidden pb-2">
             <motion.span variants={wordReveal} className="inline-block">
@@ -28,7 +28,7 @@ export function Hero() {
                 <span className="relative z-10">thinkers</span>
                 <UnderlineStroke
                   delay={1.1}
-                  className="absolute left-0 right-0 -bottom-4 h-8 w-full"
+                  className="absolute left-0 right-0 -bottom-2 h-5 w-full"
                 />
               </span>{" "}
               and
@@ -58,7 +58,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 1.6, ease }}
-          className="mx-auto mt-8 max-w-2xl text-center text-base md:text-lg text-muted-foreground leading-relaxed"
+          className="mx-auto mt-5 max-w-xl text-center text-sm md:text-[15px] text-muted-foreground leading-relaxed"
         >
           We are a team of strategists, designers, communicators and researchers.
           Together, we believe that progress only happens when you refuse to play

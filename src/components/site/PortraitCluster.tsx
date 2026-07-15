@@ -21,13 +21,13 @@ type Item = {
 };
 
 const items: Item[] = [
-  { src: p2, left: "2%",  top: "40%",  size: 150, speed: -30, delay: 0.05 },
-  { src: p7, left: "12%", top: "78%",  size: 130, speed: 20,  delay: 0.15 },
-  { src: p5, left: "22%", top: "10%",  size: 200, speed: 40,  delay: 0.25 },
-  { src: p1, left: "36%", top: "55%",  size: 220, speed: -20, delay: 0.35 },
-  { src: p3, left: "58%", top: "18%",  size: 210, speed: 30,  delay: 0.4  },
-  { src: p4, left: "76%", top: "48%",  size: 200, speed: -35, delay: 0.5  },
-  { src: p6, left: "88%", top: "72%",  size: 140, speed: 25,  delay: 0.6  },
+  { src: p2, left: "3%",  top: "40%",  size: 90,  speed: -30, delay: 0.05 },
+  { src: p7, left: "13%", top: "82%",  size: 80,  speed: 20,  delay: 0.15 },
+  { src: p5, left: "24%", top: "18%",  size: 120, speed: 40,  delay: 0.25 },
+  { src: p1, left: "38%", top: "60%",  size: 130, speed: -20, delay: 0.35 },
+  { src: p3, left: "58%", top: "22%",  size: 125, speed: 30,  delay: 0.4  },
+  { src: p4, left: "76%", top: "52%",  size: 120, speed: -35, delay: 0.5  },
+  { src: p6, left: "88%", top: "78%",  size: 84,  speed: 25,  delay: 0.6  },
 ];
 
 export function PortraitCluster() {
@@ -42,7 +42,7 @@ export function PortraitCluster() {
       {/* Desktop / tablet: scattered composition */}
       <div
         ref={ref}
-        className="relative mx-auto mt-14 hidden md:block h-[520px] lg:h-[560px] max-w-[1400px]"
+        className="relative mx-auto mt-2 hidden md:block h-[280px] lg:h-[320px] max-w-[1400px]"
       >
         {items.map((it, i) => (
           <ParallaxPortrait key={i} item={it} progress={scrollYProgress} />
