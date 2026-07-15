@@ -77,21 +77,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Elementum — Thinkers and doers changing the status quo" },
+      {
+        name: "description",
+        content:
+          "Elementum is a studio of strategists, designers and researchers helping change-makers accelerate progress across brand, digital and social.",
+      },
+      { name: "author", content: "Elementum" },
+      { property: "og:title", content: "Elementum — Thinkers and doers changing the status quo" },
+      {
+        property: "og:description",
+        content:
+          "A studio of strategists, designers and researchers helping change-makers accelerate progress.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: appCss,
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Caveat:wght@400;700&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      {
+        rel: "stylesheet",
+        href: "https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
