@@ -74,11 +74,15 @@ function ParallaxPortrait({
   progress: ReturnType<typeof useScroll>["scrollYProgress"];
 }) {
   const y = useTransform(progress, [0, 1], [0, item.speed]);
+  const leftNum = parseFloat(item.left);
+  const topNum = parseFloat(item.top);
+  const fromX = leftNum < 30 ? -60 : leftNum > 70 ? 60 : 0;
+  const fromY = topNum < 30 ? -60 : topNum > 70 ? 60 : 20;
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.6, y: 30 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 1.1, delay: 1.7 + item.delay, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, scale: 0.7, x: fromX, y: fromY, filter: "blur(12px)" }}
+      animate={{ opacity: 1, scale: 1, x: 0, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 1.2, delay: 1.7 + item.delay, ease: [0.22, 1, 0.36, 1] }}
       style={{
         left: item.left,
         top: item.top,
@@ -87,6 +91,7 @@ function ParallaxPortrait({
         y,
       }}
       className="absolute -translate-x-1/2 -translate-y-1/2"
+      data-cursor="hover"
     >
       <div className="animate-float h-full w-full">
         <img

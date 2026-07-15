@@ -1,6 +1,7 @@
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useLenis } from "@/lib/lenis";
 
 const links = ["Home", "Studio", "Services", "Contact", "FAQ's"];
 
@@ -8,7 +9,17 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
+  const lenis = useLenis();
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 40));
+
+  const scrollTo = (id: string) => (e: React.MouseEvent) => {
+    const target = document.getElementById(id);
+    if (!target) return;
+    e.preventDefault();
+    if (lenis) lenis.scrollTo(target, { offset: -80, duration: 1.4 });
+    else target.scrollIntoView({ behavior: "smooth" });
+    setOpen(false);
+  };
 
   return (
     <motion.header
@@ -20,7 +31,7 @@ export function Nav() {
       }`}
     >
       <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-6 md:px-10">
-        <a href="#top" className="font-display text-2xl md:text-3xl tracking-tight">
+        <a href="#top" onClick={scrollTo("top")} className="font-display text-2xl md:text-3xl tracking-tight">
           Elementum
         </a>
 
@@ -29,6 +40,7 @@ export function Nav() {
             <a
               key={l}
               href={`#${l.toLowerCase().replace(/[^a-z]/g, "")}`}
+              onClick={scrollTo(l.toLowerCase().replace(/[^a-z]/g, ""))}
               className="relative group text-foreground/85 hover:text-foreground transition-colors"
             >
               {l}
@@ -58,7 +70,7 @@ export function Nav() {
             <a
               key={l}
               href={`#${l.toLowerCase().replace(/[^a-z]/g, "")}`}
-              onClick={() => setOpen(false)}
+              onClick={scrollTo(l.toLowerCase().replace(/[^a-z]/g, ""))}
               className="font-display text-3xl px-6 py-6 hover:bg-mint/40 transition-colors"
             >
               {l}

@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { SmoothScroll } from "../lib/lenis";
+import gerbilAsset from "../assets/fonts/gerbil.otf.asset.json";
 
 function NotFoundComponent() {
   return (
@@ -96,6 +98,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      {
+        rel: "preload",
+        href: gerbilAsset.url,
+        as: "font",
+        type: "font/otf",
+        crossOrigin: "anonymous",
+      },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -133,8 +142,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <SmoothScroll>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+      </SmoothScroll>
     </QueryClientProvider>
   );
 }

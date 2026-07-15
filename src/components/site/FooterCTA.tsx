@@ -22,7 +22,13 @@ const contact = [
 
 export function FooterCTA() {
   return (
-    <footer className="relative bg-surface-mint">
+    <motion.footer
+      initial={{ clipPath: "inset(100% 0 0 0)" }}
+      whileInView={{ clipPath: "inset(0% 0 0 0)" }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 1.2, ease: [0.85, 0, 0.15, 1] }}
+      className="relative bg-surface-mint"
+    >
       <div className="mx-auto max-w-[1600px] px-6 md:px-10 pt-24 md:pt-32 pb-10">
         {/* Big heading */}
         <div className="text-center">
@@ -87,7 +93,7 @@ export function FooterCTA() {
           © 2026 Elementum. All rights reserved.
         </p>
       </div>
-    </footer>
+    </motion.footer>
   );
 }
 
