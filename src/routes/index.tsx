@@ -36,8 +36,11 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const [intro, setIntro] = useState(true);
   return (
     <div id="top" className="relative bg-background text-foreground overflow-x-clip">
+      {intro && <Preloader onDone={() => setIntro(false)} />}
+      <Cursor />
       <Nav />
 
       <main>
