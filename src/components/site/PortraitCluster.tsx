@@ -42,7 +42,7 @@ export function PortraitCluster() {
       {/* Desktop / tablet: scattered composition */}
       <div
         ref={ref}
-        className="relative mx-auto mt-14 hidden md:block h-[520px] lg:h-[560px] max-w-[1400px]"
+        className="relative mx-auto mt-8 hidden md:block h-[360px] lg:h-[400px] max-w-[1400px]"
       >
         {items.map((it, i) => (
           <ParallaxPortrait key={i} item={it} progress={scrollYProgress} />
