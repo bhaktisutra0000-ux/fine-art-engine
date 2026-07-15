@@ -9,7 +9,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative overflow-hidden pt-32 md:pt-40 pb-16 md:pb-24"
+      className="relative overflow-hidden pt-24 md:pt-28 pb-10 md:pb-14"
     >
       <HeroBackdrop />
 
@@ -19,7 +19,7 @@ export function Hero() {
           variants={stagger(0.14)}
           initial="hidden"
           animate="show"
-          className="font-display text-center text-[13vw] leading-[1.02] tracking-[-0.03em] sm:text-[9vw] md:text-[7.5vw] lg:text-[112px] xl:text-[128px] mx-auto max-w-[1300px]"
+          className="font-display text-center text-[12vw] leading-[1.05] tracking-[-0.03em] sm:text-6xl md:text-[64px] lg:text-[76px] xl:text-[84px] mx-auto max-w-[980px]"
         >
           <span className="block overflow-hidden pb-2">
             <motion.span variants={wordReveal} className="inline-block">
