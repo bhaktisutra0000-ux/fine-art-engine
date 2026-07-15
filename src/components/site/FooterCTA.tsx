@@ -93,7 +93,7 @@ export function FooterCTA() {
           © 2026 Elementum. All rights reserved.
         </p>
       </div>
-    </footer>
+    </motion.footer>
   );
 }
 
