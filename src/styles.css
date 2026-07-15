@@ -39,9 +39,9 @@
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
 
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-display: "Bricolage Grotesque", "Gerbil", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
-  --font-accent: "Caveat", ui-serif, cursive;
+  --font-accent: "Shadows Into Light", "Friends", "Caveat", ui-serif, cursive;
 }
 
 :root {
