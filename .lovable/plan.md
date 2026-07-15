@@ -1,80 +1,90 @@
-## What we're building
+## Goal
+Rebuild the landing page to be truly pixel-perfect to the Figma file — correct fonts (Gerbil / Satoshi / Friends), exact colors, exact spacing, and the real background details (dotted grid, decorative circles, scattered polygons) that are currently missing or approximated.
 
-A single-page marketing site for **Elementum** (creative studio), matching the Figma design at pixel accuracy on desktop and gracefully adapting down to tablet and mobile. Award-worthy motion throughout (scroll reveals, marquee, parallax portraits, animated underline/highlight strokes, magnetic hover).
+## Issues found in current build vs Figma
 
-Rebuilding `src/routes/index.tsx` (the placeholder). Single route — the design is one long scrolling page.
+1. **Fonts are wrong.**
+   - Currently: `Fraunces` (display), `Satoshi` (body), `Caveat` (accent).
+   - Figma specifies: **Gerbil** (display headings), **Satoshi** (body/nav), **Friends** (accents / cursive bits).
+   - Fraunces is a serif; Gerbil is a rounded quirky sans — the entire hero looks wrong because of this single substitution. Caveat is also not Friends.
 
-## Sections (top → bottom, from Figma)
+2. **Colors drift from Figma hex values.**
+   - Currently defined in `oklch` approximations. Figma uses exact hex: mint `#CFEBD1`, pink `#F6C3D0`, yellow stroke `#F1B12E`, footer surface `#D6EED8`, ink `#111`.
+   - Need to store these as exact hex (or exact oklch of those hex values) so highlight pills and footer match the file.
 
-1. **Nav** — "Elementum" wordmark left, center links (Home · Studio · Services · Contact · FAQ's), hamburger right.
-2. **Hero** — huge display headline "The **thinkers** and doers were changing the **status** Quo with…" with hand-drawn yellow underline strokes and mint/pink highlight pills behind selected words, sub-copy, then a scattered composition of 7 circular team portraits at varying sizes/positions.
-3. **Feature Row A** — "Tomorrow should be better than today" (highlighted "today") + copy + Read more arrow, with large circular boardroom photo right.
-4. **Feature Row B** — mirrored: circular photo left, "See how we can help you progress" right.
-5. **Services** — big heading "What we can offer you!"; three list rows (Collaborative & partnership / We talk about our weight / Piloting digital confidence), each with small left label + big title + right arrow, hover state animates the arrow and reveals a preview image.
-6. **Testimonials** — "What our customer says About Us" with mint quote card center and scattered circular avatars around, prev/next.
-7. **Footer / CTA** — mint background "Subscribe to our newsletter" + Subscribe Now pill button, then 4-column footer (Company / Terms & Policies / Follow Us / Contact), copyright.
+3. **Background is plain white** — Figma has:
+   - A subtle **dotted grid** behind the hero.
+   - Small **decorative shapes** (yellow zigzag, mint circle outline, pink dot cluster, tiny stars) scattered around headline and portraits.
+   - Currently replaced with blurred color blobs — those are wrong.
 
-## Design system
+4. **Circles / portraits sizes and positions are approximated**, not measured from Figma. Need to read each portrait node's x/y/w/h and reproduce with `position: absolute` on a fixed-aspect stage.
 
-- **Fonts:** Gerbil (display headings), Satoshi (body + nav), Friends (accents). Load via Fontshare `<link>` in `__root.tsx` head — free CDN, covers all three.
-- **Palette (from Figma):** background `#FFFFFF`, ink `#000000`, mint highlight `#CFEBD1`, pink highlight `#F6C3D0`, yellow stroke `#F1B12E`, footer mint `#D6EED8`, muted body `#333`.
-- **Tokens** in `src/styles.css` as HSL vars: `--background`, `--foreground`, `--accent-mint`, `--accent-pink`, `--accent-yellow`, `--surface-mint`. All components read tokens — no hardcoded colors.
-- **Radius:** fully rounded pills for buttons/highlights; large circle masks for imagery.
-- SVG components for the hand-drawn underline and highlight-pill shapes so they can animate stroke length / scaleX.
+5. **Spacing is off.** Hero top padding, gaps between sections, feature-row image size, services row height, footer padding — none match Figma's measured values.
 
-## Responsive breakpoints
+6. **Highlight pills & underline stroke** — currently generic SVGs. Figma has specific hand-drawn stroke shape (yellow marker underline) and specific pill radius/skew. Need to re-extract these as SVG assets from Figma.
 
-- Desktop ≥1280px: matches Figma 1920 layout (scaled).
-- Tablet 768–1279px: hero headline reflows to 3 lines, portraits reduce to 5, feature rows stack image-then-text.
-- Mobile <768px: single column, nav collapses to hamburger drawer, portraits become a horizontal marquee, service rows become tap-cards, footer columns stack 2×2.
+## Plan
 
-## Motion (level 4)
+### 1. Fonts (real Gerbil + Friends)
+- Gerbil and Friends are not on Google Fonts / Fontshare. Fetch the woff2 files that the Figma prototype uses (they're linked in the file's exported assets) or use their commercial CDN if the file references one. If unavailable, fetch the two typefaces from their vendor pages via the Figma API's image export of type samples and self-host as `@font-face` under `src/assets/fonts/`, uploaded via `lovable-assets`.
+- Update `src/styles.css`:
+  ```css
+  --font-display: "Gerbil", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    "Satoshi", ui-sans-serif, system-ui, sans-serif;
+  --font-accent:  "Friends", "Caveat", cursive;
+  ```
+- Remove Google Fonts `Fraunces` + `Caveat` links from `__root.tsx`; keep Satoshi from Fontshare; add local `@font-face` blocks for Gerbil and Friends.
 
-Framer Motion + a small GSAP ScrollTrigger for the marquee/parallax.
+### 2. Exact color tokens
+Replace approximated `oklch` values in `src/styles.css` with exact Figma hex:
+```
+--mint:         #CFEBD1
+--pink:         #F6C3D0
+--yellow:       #F1B12E
+--surface-mint: #D6EED8
+--ink:          #111111
+--muted-fg:     #4B4B4B
+```
 
-- Nav: slides down on load; blurred glass background appears after 40px scroll.
-- Hero headline: per-word mask reveal on load. Yellow stroke draws in with `pathLength`. Highlight pills scale from 0 width to full after word settles.
-- Portraits: staggered fade+scale in from their scattered positions; gentle continuous float loop; parallax Y on scroll.
-- Feature rows: image scales from 0.85 with clip-circle reveal; text words stagger up when in view.
-- Services rows: on hover, left label slides right, title shifts, arrow extends; underline sweeps across.
-- Testimonials: card fade+lift; avatars orbit slightly on scroll; swipeable carousel.
-- Footer CTA: heading letters mask-reveal; Subscribe Now button has magnetic hover.
-- Respects `prefers-reduced-motion`.
+### 3. Rebuild background layer (`HeroBackdrop.tsx`)
+- Dotted grid: repeating radial-gradient, dot color `#00000010`, spacing measured from Figma (~24px).
+- Decorative shapes extracted from Figma as inline SVGs (yellow squiggle, mint outline circle, pink dot cluster, 4-point star). Positioned absolutely at measured coordinates.
+- Remove the current blurred blobs in `Hero.tsx`.
 
-## Assets
+### 4. Re-measure and reposition
+For each of these frames, re-read the Figma node JSON (already have `figd_...` token + file id) and extract `absoluteBoundingBox` for every child:
+- Nav (link gaps, wordmark size)
+- Hero headline (font-size in px per breakpoint, line-height, letter-spacing)
+- Portrait cluster (7 portraits — x/y/diameter each)
+- Feature rows (image circle diameter, text column width, gap)
+- Services rows (row height, label size, arrow position)
+- Testimonials card (width, padding, avatar positions)
+- Footer (mint block height, subscribe pill dimensions, column gaps)
 
-Portraits (17 total across sections) generated as square photo-real portraits via `imagegen` (fast tier) with transparent-free jpg — batched in parallel. Boardroom/laptop scene photos likewise generated at 1024². All saved under `src/assets/`.
+Encode these as CSS custom properties keyed off a `1440px` design width and scale with `clamp()` so the layout is truly proportional to the Figma frame, not eyeballed.
+
+### 5. Highlight pills & underline stroke
+- Re-export the yellow underline stroke SVG path directly from Figma (it's a vector node). Replace the generic path in `UnderlineStroke.tsx`.
+- Pill: measure exact border-radius (fully rounded) and horizontal padding from Figma; adjust `HighlightPill.tsx`.
+
+### 6. Verification pass
+- Run Playwright at 1440×900, screenshot the built page section by section, and diff visually against the rendered Figma frames already saved in `src/assets/figma/`. Iterate until each section matches.
+- Also verify at 768 and 375 viewports (tablet, mobile).
 
 ## Files touched
-
-```
-src/routes/__root.tsx         head(): title/desc/OG, Fontshare <link>
-src/routes/index.tsx          full page composition
-src/styles.css                design tokens (mint/pink/yellow), font faces
-src/components/site/
-  Nav.tsx
-  Hero.tsx
-  HighlightPill.tsx           animated SVG pill
-  UnderlineStroke.tsx         animated SVG stroke
-  PortraitCluster.tsx
-  FeatureRow.tsx
-  Services.tsx
-  Testimonials.tsx
-  FooterCTA.tsx
-src/lib/motion.ts             shared variants, reduced-motion helper
-src/assets/portraits/*.jpg    generated
-src/assets/scenes/*.jpg       generated
-```
-
-Dependency add: `motion` (framer-motion successor) and `gsap` via `bun add`.
-
-## Technical notes
-
-- Everything client-side; no server functions, no DB — pure presentation.
-- SSR-safe: motion components hydrate cleanly, GSAP registered in `useEffect`.
-- SEO: real title "Elementum — Thinkers and doers changing the status quo", meta description, og tags in root head.
-- Semantic HTML: `<header><main><section><footer>`, single H1 in hero, alt text on every portrait.
+- `src/routes/__root.tsx` — swap font links.
+- `src/styles.css` — exact color tokens, `@font-face` for Gerbil + Friends, dotted-grid utility.
+- `src/components/site/HeroBackdrop.tsx` — new, dot grid + decorative SVGs.
+- `src/components/site/Hero.tsx` — remove blobs, use backdrop, apply measured sizes.
+- `src/components/site/PortraitCluster.tsx` — absolute positions from Figma.
+- `src/components/site/FeatureRow.tsx`, `Services.tsx`, `Testimonials.tsx`, `FooterCTA.tsx` — apply measured spacing / sizes.
+- `src/components/site/UnderlineStroke.tsx`, `HighlightPill.tsx` — real vector paths.
+- `src/assets/fonts/` — Gerbil + Friends woff2 (uploaded via lovable-assets).
 
 ## Out of scope
+- Adding new pages or routes.
+- Any backend / data work.
+- Changing copy.
 
-Nav routes (Studio/Services/Contact/FAQ pages) — links are anchor scrolls on this page only, since Figma contains just this one layout. Can add as separate routes in a follow-up.
+## Open question
+Gerbil and Friends are commercial fonts. If they can't be located from a free/self-host source or from the Figma file's embedded assets, the closest free substitutes will be used: **Rubik** or **Sofia Sans Condensed** for Gerbil, **Shadows Into Light Two** for Friends — and the swap will be called out clearly. Preference?
