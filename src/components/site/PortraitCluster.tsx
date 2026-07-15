@@ -21,13 +21,13 @@ type Item = {
 };
 
 const items: Item[] = [
-  { src: p2, left: "2%",  top: "40%",  size: 150, speed: -30, delay: 0.05 },
-  { src: p7, left: "12%", top: "78%",  size: 130, speed: 20,  delay: 0.15 },
-  { src: p5, left: "22%", top: "10%",  size: 200, speed: 40,  delay: 0.25 },
-  { src: p1, left: "36%", top: "55%",  size: 220, speed: -20, delay: 0.35 },
-  { src: p3, left: "58%", top: "18%",  size: 210, speed: 30,  delay: 0.4  },
-  { src: p4, left: "76%", top: "48%",  size: 200, speed: -35, delay: 0.5  },
-  { src: p6, left: "88%", top: "72%",  size: 140, speed: 25,  delay: 0.6  },
+  { src: p2, left: "2%",  top: "42%",  size: 110, speed: -30, delay: 0.05 },
+  { src: p7, left: "12%", top: "82%",  size: 96,  speed: 20,  delay: 0.15 },
+  { src: p5, left: "22%", top: "12%",  size: 150, speed: 40,  delay: 0.25 },
+  { src: p1, left: "36%", top: "58%",  size: 165, speed: -20, delay: 0.35 },
+  { src: p3, left: "58%", top: "20%",  size: 155, speed: 30,  delay: 0.4  },
+  { src: p4, left: "76%", top: "50%",  size: 150, speed: -35, delay: 0.5  },
+  { src: p6, left: "88%", top: "74%",  size: 104, speed: 25,  delay: 0.6  },
 ];
 
 export function PortraitCluster() {
