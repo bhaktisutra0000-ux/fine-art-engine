@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { HighlightPill } from "./HighlightPill";
 import { UnderlineStroke } from "./UnderlineStroke";
@@ -45,10 +45,22 @@ const scatter = [
 
 export function Testimonials() {
   const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
   const q = quotes[i];
 
+  useEffect(() => {
+    if (paused) return;
+    const t = setInterval(() => setI((v) => (v + 1) % quotes.length), 6000);
+    return () => clearInterval(t);
+  }, [paused]);
+
   return (
-    <section id="contact" className="relative overflow-hidden py-24 md:py-32">
+    <section
+      id="contact"
+      className="relative overflow-hidden py-24 md:py-32"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
       <div className="mx-auto max-w-[1600px] px-6 md:px-10 relative">
         {/* Scattered avatars (desktop only) */}
         <div aria-hidden className="absolute inset-0 hidden lg:block pointer-events-none">
@@ -104,10 +116,10 @@ export function Testimonials() {
           <AnimatePresence mode="wait">
             <motion.blockquote
               key={i}
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -24 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, scale: 0.98, filter: "blur(6px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 0.98, filter: "blur(6px)" }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="relative rounded-[36px] bg-mint/60 px-8 py-10 md:px-14 md:py-14"
             >
               <Quote
