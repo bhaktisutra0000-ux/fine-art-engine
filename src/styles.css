@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "Gerbil";
-  src: url("/__l5e/assets-v1/abfdc896-f8c3-4016-9ddd-2f0c4aa30c19/gerbil.otf") format("opentype");
+  src: url("/fonts/gerbil.otf") format("opentype");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -62,11 +62,11 @@
   --muted-foreground: oklch(0.45 0.01 250);
 
   /* Exact Figma hex values */
-  --mint: #CFEBD1;          /* hero highlight pill */
-  --mint-soft: #E4F3E6;
-  --pink: #F6C3D0;          /* hero highlight pill */
-  --yellow: #F1B12E;        /* hand-drawn stroke */
-  --surface-mint: #D6EED8;  /* footer background */
+  --mint: #cfebd1; /* hero highlight pill */
+  --mint-soft: #e4f3e6;
+  --pink: #f6c3d0; /* hero highlight pill */
+  --yellow: #f1b12e; /* hand-drawn stroke */
+  --surface-mint: #d6eed8; /* footer background */
 
   --border: oklch(0.9 0 0);
   --input: oklch(0.9 0 0);
@@ -134,8 +134,12 @@
 
 /* Marquee for mobile portraits */
 @keyframes marquee-x {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 @utility animate-marquee {
   animation: marquee-x 30s linear infinite;
@@ -143,15 +147,35 @@
 
 /* Slow float loop for portraits */
 @keyframes float-y {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 @utility animate-float {
   animation: float-y 6s ease-in-out infinite;
 }
 
+/* Keep cinematic motion on the compositor and prevent expensive repaints. */
+.motion-composite {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.cinematic-image {
+  transform: translateZ(0) scale(1.001);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;

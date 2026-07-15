@@ -17,11 +17,12 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     if (reduced) return;
 
     const l = new Lenis({
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      wheelMultiplier: 1,
-      touchMultiplier: 1.4,
+      duration: 1.05,
+      easing: (t: number) => 1 - Math.pow(1 - t, 4),
+      wheelMultiplier: 0.92,
+      touchMultiplier: 1.2,
       smoothWheel: true,
+      syncTouch: false,
     });
 
     const raf = (time: number) => {

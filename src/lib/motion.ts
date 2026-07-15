@@ -1,6 +1,14 @@
 import type { Variants, Transition } from "motion/react";
 
 export const ease: Transition["ease"] = [0.22, 1, 0.36, 1];
+export const cinematicEase: Transition["ease"] = [0.16, 1, 0.3, 1];
+
+export const cinematicSpring: Transition = {
+  type: "spring",
+  stiffness: 72,
+  damping: 18,
+  mass: 0.9,
+};
 
 export const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },

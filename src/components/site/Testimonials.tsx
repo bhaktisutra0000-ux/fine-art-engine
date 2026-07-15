@@ -16,31 +16,28 @@ const quotes = [
   {
     author: "Marcus Bell",
     role: "Head of Product, Northwind",
-    body:
-      "Elementum delivered the site within the timeline they promised. In the end, we saw a 50% traffic increase within days of launch. They also had an impressive ability to use technologies our company hadn't used before, and everything proved easy to maintain and reliable.",
+    body: "Elementum delivered the site within the timeline they promised. In the end, we saw a 50% traffic increase within days of launch. They also had an impressive ability to use technologies our company hadn't used before, and everything proved easy to maintain and reliable.",
   },
   {
     author: "Sana Iqbal",
     role: "Founder, Loom & Loam",
-    body:
-      "Working with Elementum reset our expectations for what a partner can be. Strategy, craft, and pace — all in one team. The rebrand paid for itself in a single quarter.",
+    body: "Working with Elementum reset our expectations for what a partner can be. Strategy, craft, and pace — all in one team. The rebrand paid for itself in a single quarter.",
   },
   {
     author: "Diego Rivera",
     role: "CMO, Halcyon",
-    body:
-      "They ask sharper questions than any agency we've worked with. The output is beautiful — but the thinking behind it is why we keep coming back.",
+    body: "They ask sharper questions than any agency we've worked with. The output is beautiful — but the thinking behind it is why we keep coming back.",
   },
 ];
 
 const scatter = [
-  { src: a2, left: "3%",  top: "18%",  size: 90 },
-  { src: a5, left: "9%",  top: "38%",  size: 130 },
-  { src: a1, left: "5%",  top: "68%",  size: 190 },
-  { src: a7, left: "1%",  top: "88%",  size: 110 },
-  { src: a4, left: "89%", top: "10%",  size: 90 },
-  { src: a3, left: "94%", top: "28%",  size: 130 },
-  { src: a6, left: "92%", top: "60%",  size: 200 },
+  { src: a2, left: "3%", top: "18%", size: 90 },
+  { src: a5, left: "9%", top: "38%", size: 130 },
+  { src: a1, left: "5%", top: "68%", size: 190 },
+  { src: a7, left: "1%", top: "88%", size: 110 },
+  { src: a4, left: "89%", top: "10%", size: 90 },
+  { src: a3, left: "94%", top: "28%", size: 130 },
+  { src: a6, left: "92%", top: "60%", size: 200 },
 ];
 
 export function Testimonials() {
@@ -64,31 +61,37 @@ export function Testimonials() {
       <div className="mx-auto max-w-[1600px] px-6 md:px-10 relative">
         {/* Scattered avatars (desktop only) */}
         <div aria-hidden className="absolute inset-0 hidden lg:block pointer-events-none">
-          {scatter.map((s, idx) => {
-            const fromLeft = parseFloat(s.left) < 50;
-            return (
-              <motion.img
-                key={idx}
-                src={s.src}
-                alt=""
-                initial={{ opacity: 0, scale: 0.4, x: fromLeft ? -80 : 80, filter: "blur(10px)" }}
-                whileInView={{ opacity: 1, scale: 1, x: 0, filter: "blur(0px)" }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 1.1,
-                  delay: idx * 0.09,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                style={{
-                  left: s.left,
-                  top: s.top,
-                  width: s.size,
-                  height: s.size,
-                }}
-                className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full object-cover ring-1 ring-border/40 animate-float"
-              />
-            );
-          })}
+          {scatter.map((s, idx) => (
+            <motion.img
+              key={idx}
+              src={s.src}
+              alt=""
+              initial={{
+                left: "50%",
+                top: "52%",
+                opacity: 0,
+                scale: 0.12,
+                rotate: idx % 2 === 0 ? -14 : 14,
+              }}
+              whileInView={{
+                left: s.left,
+                top: s.top,
+                opacity: 1,
+                scale: 1,
+                rotate: 0,
+              }}
+              viewport={{ once: true, margin: "-12%" }}
+              transition={{
+                type: "spring",
+                stiffness: 68,
+                damping: 18,
+                mass: 0.9,
+                delay: idx * 0.07,
+              }}
+              style={{ width: s.size, height: s.size }}
+              className="motion-composite absolute -translate-x-1/2 -translate-y-1/2 rounded-full object-cover ring-1 ring-border/40 shadow-[0_14px_42px_-20px_rgb(0_0_0_/_0.3)]"
+            />
+          ))}
         </div>
 
         {/* Heading */}
@@ -107,10 +110,7 @@ export function Testimonials() {
           says{" "}
           <span className="relative inline-block">
             <span className="relative z-10">About Us</span>
-            <UnderlineStroke
-              delay={0.9}
-              className="absolute left-0 right-0 -bottom-4 h-8 w-full"
-            />
+            <UnderlineStroke delay={0.9} className="absolute left-0 right-0 -bottom-4 h-8 w-full" />
           </span>
         </motion.h2>
 
@@ -125,11 +125,7 @@ export function Testimonials() {
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="relative rounded-[36px] bg-mint/60 px-8 py-10 md:px-14 md:py-14"
             >
-              <Quote
-                aria-hidden
-                size={40}
-                className="absolute left-6 top-6 text-foreground/25"
-              />
+              <Quote aria-hidden size={40} className="absolute left-6 top-6 text-foreground/25" />
               <Quote
                 aria-hidden
                 size={40}
@@ -139,8 +135,7 @@ export function Testimonials() {
                 {q.body}
               </p>
               <footer className="mt-6 text-center text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">{q.author}</span> —{" "}
-                {q.role}
+                <span className="font-medium text-foreground">{q.author}</span> — {q.role}
               </footer>
             </motion.blockquote>
           </AnimatePresence>

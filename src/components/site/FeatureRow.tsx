@@ -1,6 +1,6 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { ArrowRight } from "lucide-react";
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { UnderlineStroke } from "./UnderlineStroke";
 
 type Props = {
@@ -12,9 +12,16 @@ type Props = {
 };
 
 export function FeatureRow({ imageSrc, imageAlt, imagePosition, heading, body }: Props) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const imageY = useTransform(scrollYProgress, [0, 1], reduceMotion ? [0, 0] : [36, -36]);
   const imgFirst = imagePosition === "left";
   return (
-    <div className="mx-auto max-w-[1400px] px-6 md:px-10 py-16 md:py-24">
+    <div ref={ref} className="mx-auto max-w-[1400px] px-6 md:px-10 py-16 md:py-24">
       <div
         className={`grid gap-12 md:gap-16 items-center md:grid-cols-2 ${
           imgFirst ? "" : "md:[&>:first-child]:order-1"
@@ -61,12 +68,13 @@ export function FeatureRow({ imageSrc, imageAlt, imagePosition, heading, body }:
             whileInView={{ scale: 1 }}
             viewport={{ once: true, margin: "-15%" }}
             transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative mx-auto aspect-square w-full max-w-[520px]"
+            style={{ y: imageY }}
+            className="motion-composite relative mx-auto aspect-square w-full max-w-[520px]"
           >
             <img
               src={imageSrc}
               alt={imageAlt}
-              className="h-full w-full rounded-full object-cover shadow-[0_20px_60px_-20px_rgb(0_0_0_/_0.35)]"
+              className="cinematic-image h-full w-full rounded-full object-cover shadow-[0_20px_60px_-20px_rgb(0_0_0_/_0.35)]"
             />
             {/* Ambient blob */}
             <div className="absolute -z-10 inset-4 rounded-full bg-mint/40 blur-3xl" />
