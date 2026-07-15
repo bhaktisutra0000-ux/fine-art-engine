@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "Gerbil";
-  src: url("/__l5e/assets-v1/abfdc896-f8c3-4016-9ddd-2f0c4aa30c19/gerbil.otf") format("opentype");
+  src: url("/fonts/gerbil.otf") format("opentype");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
