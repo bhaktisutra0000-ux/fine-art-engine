@@ -1,90 +1,93 @@
 ## Goal
-Rebuild the landing page to be truly pixel-perfect to the Figma file — correct fonts (Gerbil / Satoshi / Friends), exact colors, exact spacing, and the real background details (dotted grid, decorative circles, scattered polygons) that are currently missing or approximated.
+Elevate the Elementum landing page to a world-class, cinematic feel: buttery smooth scrolling via Lenis, a fullscreen cinematic preloader intro, and richer scroll-driven animations across every section.
 
-## Issues found in current build vs Figma
+## 1. Lenis smooth scroll
+- Install `lenis` (successor to `@studio-freight/lenis`).
+- Create `src/lib/lenis.tsx` — a `<SmoothScroll>` provider mounted in `__root.tsx` inside `RootComponent`. Initializes Lenis with `lerp: 0.1`, `duration: 1.2`, `easing: t => Math.min(1, 1.001 - 2^(-10t))`, wheel + touch multipliers tuned, `smoothWheel: true`.
+- RAF loop syncs Lenis with `requestAnimationFrame`; on unmount, destroy.
+- Bridge Lenis → Framer Motion: pipe `lenis.on('scroll')` into `motion`'s `useScroll` by exposing scroll offset via a context, so all existing `useScroll` / scroll-linked animations stay in sync (no double scrollbars, no jitter).
+- Respect `prefers-reduced-motion`: skip Lenis init and fall back to native scroll.
+- Anchor links (`#services`, etc.) call `lenis.scrollTo(target, { offset: -80, duration: 1.4 })` — patch the nav link handler.
 
-1. **Fonts are wrong.**
-   - Currently: `Fraunces` (display), `Satoshi` (body), `Caveat` (accent).
-   - Figma specifies: **Gerbil** (display headings), **Satoshi** (body/nav), **Friends** (accents / cursive bits).
-   - Fraunces is a serif; Gerbil is a rounded quirky sans — the entire hero looks wrong because of this single substitution. Caveat is also not Friends.
+## 2. Cinematic preloader intro
+New component `src/components/site/Preloader.tsx`, mounted at top of `index.tsx`, locks body scroll until it finishes (~2.6s). Sequence:
+1. **0.0s** — Full-viewport ink (`#111`) panel, dotted-grid backdrop fades in at 8% opacity.
+2. **0.2s** — Counter `00 → 100` bottom-left (Satoshi mono-tabular), driven by `motion` `animate()` with `ease: [0.65, 0, 0.35, 1]`.
+3. **0.3s** — Large `Elementum` wordmark (Gerbil) rises from below with per-letter stagger (mask-clip reveal, `y: 110% → 0`, 60ms stagger, 0.9s each).
+4. **0.4s** — Yellow underline stroke draws under wordmark using `pathLength` 0 → 1.
+5. **1.8s** — Once counter hits 100: wordmark and counter exit upward (`y: -30%`, opacity 0), then the ink panel splits into two halves (top clip-path `inset(0 0 50% 0)` → `inset(0 0 100% 0)`, bottom mirror) revealing the hero. 900ms, `ease: [0.85, 0, 0.15, 1]`.
+6. **2.6s** — Preloader unmounts, body scroll unlocks, Lenis starts, hero entrance animations trigger.
+- Session-scoped: shows only on first visit per tab (sessionStorage flag) so internal nav / HMR doesn't replay. Skippable with Esc / click.
+- Reduced motion: shows a static 400ms fade instead.
 
-2. **Colors drift from Figma hex values.**
-   - Currently defined in `oklch` approximations. Figma uses exact hex: mint `#CFEBD1`, pink `#F6C3D0`, yellow stroke `#F1B12E`, footer surface `#D6EED8`, ink `#111`.
-   - Need to store these as exact hex (or exact oklch of those hex values) so highlight pills and footer match the file.
+## 3. Cinematic scroll & interaction upgrades
+Layer these on top of what already exists — nothing gets removed, motion gets richer.
 
-3. **Background is plain white** — Figma has:
-   - A subtle **dotted grid** behind the hero.
-   - Small **decorative shapes** (yellow zigzag, mint circle outline, pink dot cluster, tiny stars) scattered around headline and portraits.
-   - Currently replaced with blurred color blobs — those are wrong.
+- **Hero**
+  - Headline: per-word mask reveal on mount (stagger 80ms), then subtle parallax `y` on scroll (`useTransform` from Lenis scroll).
+  - Highlight pills: scale-in 0.6 → 1 with `spring(stiffness: 120, damping: 14)` after headline settles.
+  - Underline stroke: `pathLength` draws in after the word it underlines lands.
+  - Portrait cluster: each portrait enters from its own direction (top/left/right/bottom based on final position) with `blur(12px) → 0` + scale 0.85 → 1, staggered 90ms. On scroll, individual portraits parallax at different speeds (-40 to +60px range).
+  - Hero backdrop shapes: float loops already present; add scroll-linked rotation (0 → 45deg over full page) for squiggle & star.
 
-4. **Circles / portraits sizes and positions are approximated**, not measured from Figma. Need to read each portrait node's x/y/w/h and reproduce with `position: absolute` on a fixed-aspect stage.
+- **Section reveals**
+  - Section headings use split-word mask reveal triggered by `useInView({ margin: "-15% 0px" })`.
+  - Body copy fades + `y: 24 → 0`, 0.8s, stagger 40ms per paragraph.
 
-5. **Spacing is off.** Hero top padding, gaps between sections, feature-row image size, services row height, footer padding — none match Figma's measured values.
+- **FeatureRow**
+  - Image circle: enters with `clip-path: circle(0% at 50% 50%) → circle(75% at 50% 50%)` (iris reveal), 1.1s ease-out.
+  - On scroll past, image gets subtle `scale(1 → 1.06)` parallax; text column `y` parallax at opposite direction for depth.
+  - Accent doodles: draw-in via `pathLength` when row enters view.
 
-6. **Highlight pills & underline stroke** — currently generic SVGs. Figma has specific hand-drawn stroke shape (yellow marker underline) and specific pill radius/skew. Need to re-extract these as SVG assets from Figma.
+- **Services**
+  - Row hover already exists — add a horizontal `x: -8 → 0` slide + arrow icon `x: 0 → 8` on hover with spring.
+  - On scroll-in, rows stagger reveal (mask from left, 80ms stagger, cubic-bezier `[0.22, 1, 0.36, 1]`).
+  - Optional: pinned section header while rows scroll past (sticky heading with Lenis).
 
-## Plan
+- **Testimonials**
+  - Carousel slide transition upgraded to crossfade + subtle `scale(0.98 → 1)` + `blur(6px → 0)`.
+  - Avatar scatter: on section enter, avatars fly in from off-canvas to their positions with staggered spring.
+  - Auto-advance every 6s, pause on hover.
 
-### 1. Fonts (real Gerbil + Friends)
-- Gerbil and Friends are not on Google Fonts / Fontshare. Fetch the woff2 files that the Figma prototype uses (they're linked in the file's exported assets) or use their commercial CDN if the file references one. If unavailable, fetch the two typefaces from their vendor pages via the Figma API's image export of type samples and self-host as `@font-face` under `src/assets/fonts/`, uploaded via `lovable-assets`.
-- Update `src/styles.css`:
-  ```css
-  --font-display: "Gerbil", ui-sans-serif, system-ui, sans-serif;
-  --font-sans:    "Satoshi", ui-sans-serif, system-ui, sans-serif;
-  --font-accent:  "Friends", "Caveat", cursive;
-  ```
-- Remove Google Fonts `Fraunces` + `Caveat` links from `__root.tsx`; keep Satoshi from Fontshare; add local `@font-face` blocks for Gerbil and Friends.
+- **FooterCTA**
+  - Mint block: enters with a curtain reveal (`clip-path: inset(100% 0 0 0) → inset(0)`), 1.2s.
+  - "Subscribe Now" magnetic button: keep magnetic pull; add liquid hover (radial gradient follows cursor) and letter-jitter on hover (per-letter `y: 0 → -4 → 0` with 30ms stagger).
 
-### 2. Exact color tokens
-Replace approximated `oklch` values in `src/styles.css` with exact Figma hex:
-```
---mint:         #CFEBD1
---pink:         #F6C3D0
---yellow:       #F1B12E
---surface-mint: #D6EED8
---ink:          #111111
---muted-fg:     #4B4B4B
-```
+- **Global micro-interactions**
+  - Cursor: custom minimal dot cursor (12px) + trailing ring (32px, lerped) that scales on hover of `[data-cursor="hover"]` targets (links, buttons, portraits). Desktop only.
+  - Page transitions: not needed (single route), but section anchors use Lenis smooth scrollTo.
 
-### 3. Rebuild background layer (`HeroBackdrop.tsx`)
-- Dotted grid: repeating radial-gradient, dot color `#00000010`, spacing measured from Figma (~24px).
-- Decorative shapes extracted from Figma as inline SVGs (yellow squiggle, mint outline circle, pink dot cluster, 4-point star). Positioned absolutely at measured coordinates.
-- Remove the current blurred blobs in `Hero.tsx`.
+## 4. Performance & safety
+- Preload Gerbil font (`<link rel="preload" as="font" type="font/otf" crossorigin>` in `__root.tsx`) so the preloader wordmark renders in the correct face immediately — no FOUT during the intro.
+- All animations run on `transform` / `opacity` / `clip-path` (compositor-friendly). No layout thrash.
+- `will-change` only added during active animations, removed on complete.
+- `prefers-reduced-motion`: disables Lenis, preloader plays static fade, all mask reveals collapse to plain opacity fades, custom cursor disabled.
+- Custom cursor and Lenis both auto-disable on touch devices (`pointer: coarse`).
 
-### 4. Re-measure and reposition
-For each of these frames, re-read the Figma node JSON (already have `figd_...` token + file id) and extract `absoluteBoundingBox` for every child:
-- Nav (link gaps, wordmark size)
-- Hero headline (font-size in px per breakpoint, line-height, letter-spacing)
-- Portrait cluster (7 portraits — x/y/diameter each)
-- Feature rows (image circle diameter, text column width, gap)
-- Services rows (row height, label size, arrow position)
-- Testimonials card (width, padding, avatar positions)
-- Footer (mint block height, subscribe pill dimensions, column gaps)
+## Files
+**New**
+- `src/lib/lenis.tsx` — SmoothScroll provider + hook.
+- `src/components/site/Preloader.tsx` — cinematic intro.
+- `src/components/site/Cursor.tsx` — desktop custom cursor.
+- `src/lib/useSplitText.ts` — utility for per-word / per-letter mask reveal.
 
-Encode these as CSS custom properties keyed off a `1440px` design width and scale with `clamp()` so the layout is truly proportional to the Figma frame, not eyeballed.
-
-### 5. Highlight pills & underline stroke
-- Re-export the yellow underline stroke SVG path directly from Figma (it's a vector node). Replace the generic path in `UnderlineStroke.tsx`.
-- Pill: measure exact border-radius (fully rounded) and horizontal padding from Figma; adjust `HighlightPill.tsx`.
-
-### 6. Verification pass
-- Run Playwright at 1440×900, screenshot the built page section by section, and diff visually against the rendered Figma frames already saved in `src/assets/figma/`. Iterate until each section matches.
-- Also verify at 768 and 375 viewports (tablet, mobile).
-
-## Files touched
-- `src/routes/__root.tsx` — swap font links.
-- `src/styles.css` — exact color tokens, `@font-face` for Gerbil + Friends, dotted-grid utility.
-- `src/components/site/HeroBackdrop.tsx` — new, dot grid + decorative SVGs.
-- `src/components/site/Hero.tsx` — remove blobs, use backdrop, apply measured sizes.
-- `src/components/site/PortraitCluster.tsx` — absolute positions from Figma.
-- `src/components/site/FeatureRow.tsx`, `Services.tsx`, `Testimonials.tsx`, `FooterCTA.tsx` — apply measured spacing / sizes.
-- `src/components/site/UnderlineStroke.tsx`, `HighlightPill.tsx` — real vector paths.
-- `src/assets/fonts/` — Gerbil + Friends woff2 (uploaded via lovable-assets).
+**Edited**
+- `src/routes/__root.tsx` — mount `<SmoothScroll>`, preload Gerbil.
+- `src/routes/index.tsx` — mount `<Preloader>` and `<Cursor>`.
+- `src/components/site/Nav.tsx` — Lenis-aware anchor scroll.
+- `src/components/site/Hero.tsx` — richer entrance, parallax hook.
+- `src/components/site/PortraitCluster.tsx` — directional entrance + per-portrait parallax.
+- `src/components/site/FeatureRow.tsx` — iris reveal + opposing parallax.
+- `src/components/site/Services.tsx` — staggered mask reveal + hover spring.
+- `src/components/site/Testimonials.tsx` — crossfade + scatter entrance.
+- `src/components/site/FooterCTA.tsx` — curtain reveal + liquid button.
+- `src/components/site/HeroBackdrop.tsx` — scroll-linked shape rotation.
+- `package.json` / `bun.lock` — add `lenis`.
 
 ## Out of scope
-- Adding new pages or routes.
-- Any backend / data work.
-- Changing copy.
+- New pages / routes.
+- Backend or data changes.
+- Copy or layout restructuring.
 
 ## Open question
-Gerbil and Friends are commercial fonts. If they can't be located from a free/self-host source or from the Figma file's embedded assets, the closest free substitutes will be used: **Rubik** or **Sofia Sans Condensed** for Gerbil, **Shadows Into Light Two** for Friends — and the swap will be called out clearly. Preference?
+Custom cursor: include it, or keep the native cursor and put those "budget" into more scroll animations? I'll default to **including it (desktop only, gracefully disabled on touch / reduced-motion)** unless you say otherwise.
