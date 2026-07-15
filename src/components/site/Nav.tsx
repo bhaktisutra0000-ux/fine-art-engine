@@ -1,6 +1,7 @@
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useLenis } from "@/lib/lenis";
 
 const links = ["Home", "Studio", "Services", "Contact", "FAQ's"];
 
@@ -8,7 +9,17 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
+  const lenis = useLenis();
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 40));
+
+  const scrollTo = (id: string) => (e: React.MouseEvent) => {
+    const target = document.getElementById(id);
+    if (!target) return;
+    e.preventDefault();
+    if (lenis) lenis.scrollTo(target, { offset: -80, duration: 1.4 });
+    else target.scrollIntoView({ behavior: "smooth" });
+    setOpen(false);
+  };
 
   return (
     <motion.header
