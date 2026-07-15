@@ -5,12 +5,9 @@ import { PortraitCluster } from "./PortraitCluster";
 import { HeroBackdrop } from "./HeroBackdrop";
 import { ease, wordReveal, stagger } from "@/lib/motion";
 
-export function Hero() {
+export function Hero({ ready = true }: { ready?: boolean }) {
   return (
-    <section
-      id="home"
-      className="relative overflow-hidden pt-24 md:pt-28 pb-10 md:pb-14"
-    >
+    <section id="home" className="relative overflow-hidden pt-24 md:pt-28 pb-10 md:pb-14">
       <HeroBackdrop />
 
       <div className="relative mx-auto max-w-[1400px] px-6 md:px-10">
@@ -18,7 +15,7 @@ export function Hero() {
         <motion.h1
           variants={stagger(0.14)}
           initial="hidden"
-          animate="show"
+          animate={ready ? "show" : "hidden"}
           className="font-display text-center text-[12vw] leading-[1.05] tracking-[-0.03em] sm:text-6xl md:text-[64px] lg:text-[76px] xl:text-[84px] mx-auto max-w-[980px]"
         >
           <span className="block overflow-hidden pb-2">
@@ -55,18 +52,17 @@ export function Hero() {
 
         {/* Sub-copy */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
           transition={{ duration: 0.9, delay: 1.6, ease }}
           className="mx-auto mt-5 max-w-xl text-center text-sm md:text-[15px] text-muted-foreground leading-relaxed"
         >
-          We are a team of strategists, designers, communicators and researchers.
-          Together, we believe that progress only happens when you refuse to play
-          things safe.
+          We are a team of strategists, designers, communicators and researchers. Together, we
+          believe that progress only happens when you refuse to play things safe.
         </motion.p>
 
         {/* Portraits */}
-        <PortraitCluster />
+        <PortraitCluster ready={ready} />
       </div>
     </section>
   );

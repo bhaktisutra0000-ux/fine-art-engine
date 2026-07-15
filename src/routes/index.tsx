@@ -41,10 +41,10 @@ function Home() {
     <div id="top" className="relative bg-background text-foreground overflow-x-clip">
       {intro && <Preloader onDone={() => setIntro(false)} />}
       <Cursor />
-      <Nav />
+      <Nav ready={!intro} />
 
       <main>
-        <Hero />
+        <Hero ready={!intro} />
 
         <section id="studio">
           <FeatureRow
