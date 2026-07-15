@@ -108,12 +108,20 @@
 @utility font-display {
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-variation-settings: "SOFT" 100, "WONK" 1;
-  letter-spacing: -0.02em;
+  font-variation-settings: "wdth" 96;
+  letter-spacing: -0.035em;
+  font-weight: 700;
 }
 
 @utility font-accent {
   font-family: var(--font-accent);
+}
+
+/* Dotted grid backdrop (Figma hero background pattern) */
+@utility bg-dots {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: 0 0;
 }
 
 /* Marquee for mobile portraits */
