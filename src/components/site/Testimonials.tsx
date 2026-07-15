@@ -64,28 +64,31 @@ export function Testimonials() {
       <div className="mx-auto max-w-[1600px] px-6 md:px-10 relative">
         {/* Scattered avatars (desktop only) */}
         <div aria-hidden className="absolute inset-0 hidden lg:block pointer-events-none">
-          {scatter.map((s, idx) => (
-            <motion.img
-              key={idx}
-              src={s.src}
-              alt=""
-              initial={{ opacity: 0, scale: 0.6 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.9,
-                delay: idx * 0.08,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              style={{
-                left: s.left,
-                top: s.top,
-                width: s.size,
-                height: s.size,
-              }}
-              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full object-cover ring-1 ring-border/40 animate-float"
-            />
-          ))}
+          {scatter.map((s, idx) => {
+            const fromLeft = parseFloat(s.left) < 50;
+            return (
+              <motion.img
+                key={idx}
+                src={s.src}
+                alt=""
+                initial={{ opacity: 0, scale: 0.4, x: fromLeft ? -80 : 80, filter: "blur(10px)" }}
+                whileInView={{ opacity: 1, scale: 1, x: 0, filter: "blur(0px)" }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 1.1,
+                  delay: idx * 0.09,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                style={{
+                  left: s.left,
+                  top: s.top,
+                  width: s.size,
+                  height: s.size,
+                }}
+                className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full object-cover ring-1 ring-border/40 animate-float"
+              />
+            );
+          })}
         </div>
 
         {/* Heading */}
