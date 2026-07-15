@@ -58,7 +58,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 1.6, ease }}
-          className="mx-auto mt-8 max-w-2xl text-center text-base md:text-lg text-muted-foreground leading-relaxed"
+          className="mx-auto mt-5 max-w-xl text-center text-sm md:text-[15px] text-muted-foreground leading-relaxed"
         >
           We are a team of strategists, designers, communicators and researchers.
           Together, we believe that progress only happens when you refuse to play
