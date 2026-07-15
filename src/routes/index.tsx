@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { Nav } from "@/components/site/Nav";
 import { Hero } from "@/components/site/Hero";
 import { FeatureRow, StrokeAccent } from "@/components/site/FeatureRow";
@@ -6,6 +7,8 @@ import { Services } from "@/components/site/Services";
 import { Testimonials } from "@/components/site/Testimonials";
 import { FooterCTA } from "@/components/site/FooterCTA";
 import { HighlightPill } from "@/components/site/HighlightPill";
+import { Preloader } from "@/components/site/Preloader";
+import { Cursor } from "@/components/site/Cursor";
 
 import feature1 from "@/assets/figma/da7717ef2f3a21b6e13dc4d9c4b346bc9b5a7682.jpg";
 import feature2 from "@/assets/figma/3ddf828267cb844171aaad94b1f6da3e7949acbd.jpg";
