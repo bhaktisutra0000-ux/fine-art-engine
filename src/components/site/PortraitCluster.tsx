@@ -76,25 +76,22 @@ function ParallaxPortrait({
   const reduce = useReducedMotion();
   const y = useTransform(progress, [0, 1], [0, item.speed]);
 
+  // Scatter reveal: start collapsed at cluster center, then burst outward
+  // to each portrait's final scattered position.
   const leftNum = parseFloat(item.left);
   const topNum = parseFloat(item.top);
-
-  // True off-screen origin so photos fly IN to place.
-  const vw = typeof window !== "undefined" ? window.innerWidth : 1440;
-  const vh = typeof window !== "undefined" ? window.innerHeight : 900;
-  const fromX =
-    leftNum < 40 ? -(vw * 0.6) - item.size : leftNum > 60 ? vw * 0.6 + item.size : 0;
-  const fromY = topNum < 40 ? -(vh * 0.7) : topNum > 60 ? vh * 0.6 : -vh * 0.3;
+  const dx = (50 - leftNum) * 6; // px offset toward center
+  const dy = (50 - topNum) * 4;
 
   const initial = reduce
     ? { opacity: 0 }
     : {
         opacity: 0,
-        x: fromX,
-        y: fromY,
-        scale: 0.35,
-        rotate: item.rotate * 2,
-        filter: "blur(14px)",
+        x: dx,
+        y: dy,
+        scale: 0,
+        rotate: item.rotate * 1.5,
+        filter: "blur(10px)",
       };
 
   const animate = reduce
