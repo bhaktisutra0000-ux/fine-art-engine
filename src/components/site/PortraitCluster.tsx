@@ -76,25 +76,22 @@ function ParallaxPortrait({
   const reduce = useReducedMotion();
   const y = useTransform(progress, [0, 1], [0, item.speed]);
 
+  // Scatter reveal: start collapsed at cluster center, then burst outward
+  // to each portrait's final scattered position.
   const leftNum = parseFloat(item.left);
   const topNum = parseFloat(item.top);
-
-  // True off-screen origin so photos fly IN to place.
-  const vw = typeof window !== "undefined" ? window.innerWidth : 1440;
-  const vh = typeof window !== "undefined" ? window.innerHeight : 900;
-  const fromX =
-    leftNum < 40 ? -(vw * 0.6) - item.size : leftNum > 60 ? vw * 0.6 + item.size : 0;
-  const fromY = topNum < 40 ? -(vh * 0.7) : topNum > 60 ? vh * 0.6 : -vh * 0.3;
+  const dx = (50 - leftNum) * 6; // px offset toward center
+  const dy = (50 - topNum) * 4;
 
   const initial = reduce
     ? { opacity: 0 }
     : {
         opacity: 0,
-        x: fromX,
-        y: fromY,
-        scale: 0.35,
-        rotate: item.rotate * 2,
-        filter: "blur(14px)",
+        x: dx,
+        y: dy,
+        scale: 0,
+        rotate: item.rotate * 1.5,
+        filter: "blur(10px)",
       };
 
   const animate = reduce
@@ -113,9 +110,11 @@ function ParallaxPortrait({
       initial={initial}
       animate={animate}
       transition={{
-        duration: 1.5,
-        delay: 1.3 + item.delay * 0.9,
+        duration: 1.2,
+        delay: 1.4 + item.delay,
         ease: [0.16, 1, 0.3, 1],
+        scale: { type: "spring", stiffness: 120, damping: 12, delay: 1.4 + item.delay },
+        rotate: { type: "spring", stiffness: 90, damping: 14, delay: 1.4 + item.delay },
       }}
       style={{
         left: item.left,
