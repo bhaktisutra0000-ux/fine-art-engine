@@ -52,14 +52,14 @@ export function FeatureRow({ imageSrc, imageAlt, imagePosition, heading, body }:
         <motion.div
           initial={{ opacity: 0, clipPath: "circle(0% at 50% 50%)" }}
           whileInView={{ opacity: 1, clipPath: "circle(75% at 50% 50%)" }}
-          viewport={{ once: true, margin: "-15%" }}
+          viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
           className={imgFirst ? "md:order-1" : ""}
         >
           <motion.div
             initial={{ scale: 1.15 }}
             whileInView={{ scale: 1 }}
-            viewport={{ once: true, margin: "-15%" }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
             className="relative mx-auto aspect-square w-full max-w-[520px]"
           >
