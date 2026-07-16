@@ -110,9 +110,11 @@ function ParallaxPortrait({
       initial={initial}
       animate={animate}
       transition={{
-        duration: 1.5,
-        delay: 1.3 + item.delay * 0.9,
+        duration: 1.2,
+        delay: 1.4 + item.delay,
         ease: [0.16, 1, 0.3, 1],
+        scale: { type: "spring", stiffness: 120, damping: 12, delay: 1.4 + item.delay },
+        rotate: { type: "spring", stiffness: 90, damping: 14, delay: 1.4 + item.delay },
       }}
       style={{
         left: item.left,
