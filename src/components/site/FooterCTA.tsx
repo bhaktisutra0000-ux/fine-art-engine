@@ -25,7 +25,7 @@ export function FooterCTA() {
     <motion.footer
       initial={{ clipPath: "inset(100% 0 0 0)" }}
       whileInView={{ clipPath: "inset(0% 0 0 0)" }}
-      viewport={{ once: true, margin: "-10%" }}
+      viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 1.2, ease: [0.85, 0, 0.15, 1] }}
       className="relative bg-surface-mint"
     >
@@ -35,7 +35,7 @@ export function FooterCTA() {
           <motion.h2
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-15%" }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.9, ease }}
             className="font-display text-6xl sm:text-7xl md:text-[112px] leading-[1] tracking-tight"
           >
