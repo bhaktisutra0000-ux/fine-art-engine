@@ -25,7 +25,7 @@ export function Services() {
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-15%" }}
+          viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className="font-display text-[14vw] sm:text-[10vw] md:text-[8vw] lg:text-[112px] leading-[1] tracking-tight max-w-4xl"
         >
@@ -65,7 +65,7 @@ function ServiceRow({
     <motion.li
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10%" }}
+      viewport={{ once: true, amount: 0.2 }}
       transition={{
         duration: 0.7,
         delay: index * 0.08,
