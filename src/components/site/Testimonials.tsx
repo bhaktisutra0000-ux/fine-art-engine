@@ -113,7 +113,11 @@ export function Testimonials() {
         </motion.h2>
 
         {/* Quote card */}
-        <div className="relative mt-16 mx-auto max-w-3xl">
+        <div
+          className="relative mt-16 mx-auto max-w-3xl"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
           <AnimatePresence mode="wait">
             <motion.blockquote
               key={i}
