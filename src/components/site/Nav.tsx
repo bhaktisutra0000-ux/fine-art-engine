@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useLenis } from "@/lib/lenis";
 
-const links = ["Home", "Studio", "Services", "Contact", "FAQ's"];
+const links = ["Home", "Studio", "Services", "Contact"];
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);

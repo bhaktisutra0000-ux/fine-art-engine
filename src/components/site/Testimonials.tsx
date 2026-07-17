@@ -58,8 +58,6 @@ export function Testimonials() {
     <section
       id="contact"
       className="relative overflow-hidden py-24 md:py-32"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
     >
       <div className="mx-auto max-w-[1600px] px-6 md:px-10 relative">
         {/* Scattered avatars (desktop only) */}
@@ -115,7 +113,11 @@ export function Testimonials() {
         </motion.h2>
 
         {/* Quote card */}
-        <div className="relative mt-16 mx-auto max-w-3xl">
+        <div
+          className="relative mt-16 mx-auto max-w-3xl"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
           <AnimatePresence mode="wait">
             <motion.blockquote
               key={i}
