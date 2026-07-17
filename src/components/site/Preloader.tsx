@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useMotionValue, useTransform, animate } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useLockScroll } from "@/lib/lenis";
 
 const LETTERS = "Elementum".split("");
 
@@ -8,63 +9,63 @@ export function Preloader({ onDone }: { onDone: () => void }) {
   const [split, setSplit] = useState(false);
   const count = useMotionValue(0);
   const rounded = useTransform(count, (v) => String(Math.floor(v)).padStart(3, "0"));
+  const lockScroll = useLockScroll();
+  const doneRef = useRef(false);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
+    const fireDone = () => {
+      if (doneRef.current) return;
+      doneRef.current = true;
+      setVisible(false);
+      lockScroll(false);
+      onDone();
+    };
+
     const reduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (reduced) {
-      const t = setTimeout(() => {
-        setVisible(false);
-        onDone();
-      }, 400);
-      return () => clearTimeout(t);
+      timersRef.current.push(setTimeout(fireDone, 400));
+      return () => {
+        timersRef.current.forEach(clearTimeout);
+        timersRef.current = [];
+      };
     }
 
-    // Lock scroll
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    lockScroll(true);
 
     const controls = animate(count, 100, {
       duration: 1.9,
       ease: [0.65, 0, 0.35, 1],
     });
 
-    const splitT = setTimeout(() => setSplit(true), 2100);
-    const doneT = setTimeout(() => {
-      setVisible(false);
-      document.body.style.overflow = prev;
-      onDone();
-    }, 3100);
+    timersRef.current.push(setTimeout(() => setSplit(true), 2100));
+    timersRef.current.push(setTimeout(fireDone, 3100));
 
     const skip = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        controls.stop();
-        setSplit(true);
-        setTimeout(() => {
-          setVisible(false);
-          document.body.style.overflow = prev;
-          onDone();
-        }, 700);
-      }
+      if (e.key !== "Escape" || doneRef.current) return;
+      controls.stop();
+      setSplit(true);
+      timersRef.current.push(setTimeout(fireDone, 700));
     };
     window.addEventListener("keydown", skip);
 
     return () => {
       controls.stop();
-      clearTimeout(splitT);
-      clearTimeout(doneT);
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
       window.removeEventListener("keydown", skip);
-      document.body.style.overflow = prev;
+      lockScroll(false);
     };
-  }, [count, onDone]);
+  }, [count, onDone, lockScroll]);
 
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="fixed inset-0 z-[100] pointer-events-none"
+          className="fixed inset-0 z-[100]"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
@@ -89,7 +90,7 @@ export function Preloader({ onDone }: { onDone: () => void }) {
 
           {/* Centered content overlay */}
           <motion.div
-            className="absolute inset-0 flex items-center justify-center"
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
             animate={{ opacity: split ? 0 : 1, y: split ? -40 : 0 }}
             transition={{ duration: 0.6, ease: [0.85, 0, 0.15, 1] }}
           >
@@ -115,7 +116,7 @@ export function Preloader({ onDone }: { onDone: () => void }) {
 
           {/* Counter */}
           <motion.div
-            className="absolute bottom-8 left-8 md:bottom-12 md:left-12 text-white/80 font-sans tabular-nums text-lg md:text-2xl tracking-widest"
+            className="absolute bottom-8 left-8 md:bottom-12 md:left-12 text-white/80 font-sans tabular-nums text-lg md:text-2xl tracking-widest pointer-events-none"
             initial={{ opacity: 0 }}
             animate={{ opacity: split ? 0 : 1 }}
             transition={{ duration: 0.4, delay: split ? 0 : 0.2 }}
@@ -126,7 +127,7 @@ export function Preloader({ onDone }: { onDone: () => void }) {
 
           {/* Skip hint */}
           <motion.div
-            className="absolute bottom-8 right-8 md:bottom-12 md:right-12 text-white/40 font-sans text-xs tracking-[0.2em] uppercase"
+            className="absolute bottom-8 right-8 md:bottom-12 md:right-12 text-white/40 font-sans text-xs tracking-[0.2em] uppercase pointer-events-none"
             initial={{ opacity: 0 }}
             animate={{ opacity: split ? 0 : 1 }}
             transition={{ duration: 0.4, delay: 0.8 }}
