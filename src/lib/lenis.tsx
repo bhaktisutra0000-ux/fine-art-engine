@@ -1,5 +1,21 @@
 import Lenis from "lenis";
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+
+export function useLockScroll() {
+  const lenis = useContext(LenisCtx);
+  return useCallback(
+    (lock: boolean) => {
+      if (typeof document !== "undefined") {
+        document.body.style.overflow = lock ? "hidden" : "";
+      }
+      if (lenis) {
+        if (lock) lenis.stop();
+        else lenis.start();
+      }
+    },
+    [lenis],
+  );
+}
 
 const LenisCtx = createContext<Lenis | null>(null);
 
