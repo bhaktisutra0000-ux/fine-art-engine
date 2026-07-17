@@ -76,11 +76,9 @@ function ParallaxPortrait({
   const reduce = useReducedMotion();
   const y = useTransform(progress, [0, 1], [0, item.speed]);
 
-  // Scatter reveal: start collapsed at cluster center, then burst outward
-  // to each portrait's final scattered position.
   const leftNum = parseFloat(item.left);
   const topNum = parseFloat(item.top);
-  const dx = (50 - leftNum) * 6; // px offset toward center
+  const dx = (50 - leftNum) * 6;
   const dy = (50 - topNum) * 4;
 
   const initial = reduce
@@ -106,34 +104,41 @@ function ParallaxPortrait({
       };
 
   return (
-    <motion.div
-      initial={initial}
-      animate={animate}
-      transition={{
-        duration: 1.2,
-        delay: 1.4 + item.delay,
-        ease: [0.16, 1, 0.3, 1],
-        scale: { type: "spring", stiffness: 120, damping: 12, delay: 1.4 + item.delay },
-        rotate: { type: "spring", stiffness: 90, damping: 14, delay: 1.4 + item.delay },
-      }}
+    <div
       style={{
         left: item.left,
         top: item.top,
         width: `clamp(64px, ${item.size / 14.4}vw, ${item.size}px)`,
         height: `clamp(64px, ${item.size / 14.4}vw, ${item.size}px)`,
-        y,
       }}
       className="absolute -translate-x-1/2 -translate-y-1/2"
       data-cursor="hover"
     >
-      <div className="animate-float h-full w-full">
-        <img
-          src={item.src}
-          alt=""
-          loading="lazy"
-          className="h-full w-full rounded-full object-cover ring-1 ring-border/40 shadow-[0_10px_40px_-15px_rgb(0_0_0_/_0.25)]"
-        />
-      </div>
-    </motion.div>
+      {/* Scroll parallax layer — owns its own y transform */}
+      <motion.div style={{ y }} className="h-full w-full">
+        {/* Entrance layer — owns x/y/scale/rotate animation */}
+        <motion.div
+          initial={initial}
+          animate={animate}
+          transition={{
+            duration: 1.2,
+            delay: 1.4 + item.delay,
+            ease: [0.16, 1, 0.3, 1],
+            scale: { type: "spring", stiffness: 120, damping: 12, delay: 1.4 + item.delay },
+            rotate: { type: "spring", stiffness: 90, damping: 14, delay: 1.4 + item.delay },
+          }}
+          className="h-full w-full"
+        >
+          <div className="animate-float h-full w-full">
+            <img
+              src={item.src}
+              alt=""
+              loading="lazy"
+              className="h-full w-full rounded-full object-cover ring-1 ring-border/40 shadow-[0_10px_40px_-15px_rgb(0_0_0_/_0.25)]"
+            />
+          </div>
+        </motion.div>
+      </motion.div>
+    </div>
   );
 }
