@@ -17,6 +17,8 @@ export function Cursor() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!fine || reduced) return;
     setEnabled(true);
+    const prevCursor = document.documentElement.style.cursor;
+    document.documentElement.style.cursor = "none";
 
     const move = (e: MouseEvent) => {
       x.set(e.clientX);
@@ -29,7 +31,10 @@ export function Cursor() {
       );
     };
     window.addEventListener("mousemove", move, { passive: true });
-    return () => window.removeEventListener("mousemove", move);
+    return () => {
+      window.removeEventListener("mousemove", move);
+      document.documentElement.style.cursor = prevCursor;
+    };
   }, [x, y]);
 
   if (!enabled) return null;
