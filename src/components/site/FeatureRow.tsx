@@ -24,7 +24,7 @@ export function FeatureRow({ imageSrc, imageAlt, imagePosition, heading, body }:
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-15%" }}
+          viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className={imgFirst ? "md:order-2" : ""}
         >
